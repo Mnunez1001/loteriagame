@@ -18,7 +18,9 @@ public class loteriaDriver extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        GamePane gamePane = new GamePane();
+        scene = new Scene(gamePane, 800, 600);
+        stage.setTitle("Lotería Game");
         stage.setScene(scene);
         stage.show();
     }

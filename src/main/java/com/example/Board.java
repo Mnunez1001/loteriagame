@@ -49,7 +49,7 @@ public class Board {
         return grid[row][col];
     }
 
-    //create a method contains to check if the card is in the board
+    
 
     
 

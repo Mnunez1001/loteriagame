@@ -29,7 +29,7 @@ public class ComputerPlayer {
     }
     
     public boolean checkWin(WinningCondition condition) {
-        return condition.isWinningBoard(board, markedCards);
+        return WinningCondition.isWinningBoard(board, markedCards);
     }
 }
 
