@@ -19,7 +19,7 @@ public class loteriaDriver extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         GamePane gamePane = new GamePane();
-        scene = new Scene(gamePane, 900, 600);
+        scene = new Scene(gamePane, 1000, 850);
         stage.setTitle("Lotería Game");
         stage.setScene(scene);
         stage.show();
