@@ -4,10 +4,9 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class GamePane extends BorderPane {
     private List<Card> drawnCards;
     private GridPane boardGrid;
     private Button loteriaButton;
-    //private Text drawnCardText;
+    private Text drawnCardText;
     private Timer timer;
     private ImageView drawnCardImageView;
 
@@ -30,9 +29,9 @@ public class GamePane extends BorderPane {
         drawnCards = new ArrayList<>();
         boardGrid = new GridPane();
         loteriaButton = new Button("Lotería");
-        //drawnCardText = new Text("Next Card:");
+        drawnCardText = new Text("Next Card:");
 
-        // Add drawn card image
+        // Drawn card image
         drawnCardImageView = new ImageView();
         drawnCardImageView.setFitWidth(200);
         drawnCardImageView.setFitHeight(350);
@@ -52,23 +51,50 @@ public class GamePane extends BorderPane {
             for (int col = 0; col < 4; col++) {
                 Card card = playerBoard.getCard(row, col);
                 ImageView imageView = new ImageView(card.getImage());
-                imageView.setFitWidth(120); // Adjust size as needed
+                imageView.setFitWidth(120);
                 imageView.setFitHeight(185);
 
                 Button cardButton = new Button();
                 cardButton.setGraphic(imageView);
+
+                StackPane stack = new StackPane();
+                stack.getChildren().add(cardButton); // Add button to stack
+
+                // Store the StackPane inside the GridPane
+                boardGrid.add(stack, col, row);
+
                 int finalRow = row;
                 int finalCol = col;
-                cardButton.setOnAction(e -> markCard(finalRow, finalCol, cardButton));
-                boardGrid.add(cardButton, col, row);
+                cardButton.setOnAction(e -> markCard(finalRow, finalCol, stack));
+
+                // boardGrid.add(cardButton, col, row);
             }
         }
     }
 
-    private void markCard(int row, int col, Button cardButton) {
+    private void markCard(int row, int col, StackPane stack) {
         Card selectedCard = playerBoard.getCard(row, col);
+
+        // Check if the card has been drawn before marking
         if (drawnCards.contains(selectedCard)) {
-            cardButton.setStyle("-fx-background-color: green;");
+            // Load the bean image
+            ImageView beanImage = new ImageView(new Image("/com/example/bean.jpg")); // Adjust path as needed
+                                                                                                       
+            beanImage.setFitWidth(50);
+            beanImage.setFitHeight(50);
+
+            // Add the bean image on top of the button
+            stack.getChildren().add(beanImage);
+
+            // // Get the current image of the card
+            // ImageView cardImageView = (ImageView) cardButton.getGraphic();
+
+            // // Create a StackPane to overlay the bean on the card
+            // StackPane stack = new StackPane();
+            // stack.getChildren().addAll(cardImageView, beanImage);
+
+            // // Set the new stack as the button's graphic
+            // cardButton.setGraphic(stack);
         }
     }
 
@@ -78,7 +104,7 @@ public class GamePane extends BorderPane {
         // Make the button bigger
         loteriaButton.setStyle("-fx-font-size: 40px; -fx-padding: 10px 10px;");
 
-        //loteriaButton.setRotate(90); // Rotate the button text
+        // loteriaButton.setRotate(90); // Rotate the button text
 
         // Wrap the button in a VBox and align it to the left
         VBox bottomBox = new VBox(loteriaButton);
