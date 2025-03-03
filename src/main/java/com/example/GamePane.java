@@ -22,6 +22,7 @@ public class GamePane extends BorderPane {
     private Text drawnCardText;
     private Timer timer;
     private ImageView drawnCardImageView;
+    private List<ImageView> beans;
 
     public GamePane() {
         playerBoard = new Board();
@@ -36,6 +37,16 @@ public class GamePane extends BorderPane {
         drawnCardImageView.setFitWidth(200);
         drawnCardImageView.setFitHeight(350);
 
+        // Create the list of 16 draggable beans
+        beans = new ArrayList<>();
+        for (int i = 0; i < 16; i++) {
+            ImageView bean = new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("com/example/bean.jpg")));
+            bean.setFitWidth(50);
+            bean.setFitHeight(50);
+            makeDraggable(bean);
+            beans.add(bean);
+        }
+
         setLeft(boardGrid);
         setRight(drawnCardImageView);
         // setBottom(loteriaButton);
@@ -47,30 +58,92 @@ public class GamePane extends BorderPane {
     }
 
     private void setupBoard() {
+        boardGrid.setPadding(new Insets(10));
+        boardGrid.setHgap(5);
+        boardGrid.setVgap(5);
+    
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 Card card = playerBoard.getCard(row, col);
-                ImageView imageView = new ImageView(card.getImage());
-                imageView.setFitWidth(120);
-                imageView.setFitHeight(185);
-
-                Button cardButton = new Button();
-                cardButton.setGraphic(imageView);
-
-                StackPane stack = new StackPane();
-                stack.getChildren().add(cardButton); // Add button to stack
-
-                // Store the StackPane inside the GridPane
-                boardGrid.add(stack, col, row);
-
-                int finalRow = row;
-                int finalCol = col;
-                cardButton.setOnAction(e -> markCard(finalRow, finalCol, stack));
-
-                // boardGrid.add(cardButton, col, row);
+                ImageView cardImage = new ImageView(new Image(card.getImagePath()));
+                cardImage.setFitWidth(100);
+                cardImage.setFitHeight(150);
+                boardGrid.add(cardImage, col, row);
             }
         }
+    
+        // Create a vertical box to organize beans on the right side
+        VBox beanTray = new VBox(10);
+        beanTray.setPadding(new Insets(10));
+        beanTray.setAlignment(Pos.CENTER);
+    
+        for (ImageView bean : beans) {
+            beanTray.getChildren().add(bean);
+        }
+    
+        // Use HBox to put the board on the left and the bean tray on the right
+        HBox layout = new HBox(20, boardGrid, beanTray);
+        layout.setAlignment(Pos.CENTER);
+    
+        setCenter(layout); // Set the board and bean tray in the center
     }
+
+    private void makeDraggable(ImageView bean) {
+        final double[] offsetX = new double[1];
+        final double[] offsetY = new double[1];
+    
+        bean.setOnMousePressed(event -> {
+            offsetX[0] = event.getSceneX() - bean.getLayoutX();
+            offsetY[0] = event.getSceneY() - bean.getLayoutY();
+        });
+    
+        bean.setOnMouseDragged(event -> {
+            bean.setLayoutX(event.getSceneX() - offsetX[0]);
+            bean.setLayoutY(event.getSceneY() - offsetY[0]);
+        });
+    
+        bean.setOnMouseReleased(event -> {
+            int row = getGridRow(event.getSceneY());
+            int col = getGridCol(event.getSceneX());
+    
+            if (row != -1 && col != -1) {
+                Card selectedCard = playerBoard.getCard(row, col);
+                
+                if (drawnCards.contains(selectedCard)) {
+                    // Lock the bean in place over the correct card
+                    bean.setLayoutX(boardGrid.getLayoutX() + col * 120 + 30);
+                    bean.setLayoutY(boardGrid.getLayoutY() + row * 185 + 30);
+                } else {
+                    // Reset bean position if incorrect
+                    bean.setLayoutX(10 + 60 * beans.indexOf(bean)); // Back to tray
+                    bean.setLayoutY(500);
+                }
+            }
+        });
+    }
+
+    private int getGridRow(double sceneY) {
+        for (int row = 0; row < 4; row++) {
+            if (sceneY >= boardGrid.getLayoutY() + row * 185 &&
+                sceneY < boardGrid.getLayoutY() + (row + 1) * 185) {
+                return row;
+            }
+        }
+        return -1;
+    }
+    
+    private int getGridCol(double sceneX) {
+        for (int col = 0; col < 4; col++) {
+            if (sceneX >= boardGrid.getLayoutX() + col * 120 &&
+                sceneX < boardGrid.getLayoutX() + (col + 1) * 120) {
+                return col;
+            }
+        }
+        return -1;
+    }
+    
+    
+    
 
     private void markCard(int row, int col, StackPane stack) {
         Card selectedCard = playerBoard.getCard(row, col);
@@ -79,7 +152,7 @@ public class GamePane extends BorderPane {
         if (drawnCards.contains(selectedCard)) {
             // Load the bean image
             ImageView beanImage = new ImageView(new Image("/com/example/bean.jpg")); // Adjust path as needed
-                                                                                                       
+
             beanImage.setFitWidth(50);
             beanImage.setFitHeight(50);
 
