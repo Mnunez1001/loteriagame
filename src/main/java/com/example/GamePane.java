@@ -38,22 +38,22 @@ public class GamePane extends BorderPane {
         drawnCardImageView.setFitHeight(350);
 
         // Create the list of 16 draggable beans
-        beans = new ArrayList<>();
+        beans = new ArrayList<>();                                              ///com/example/mage00.jpg com/example/beanEmoji.png
         for (int i = 0; i < 16; i++) {
-            ImageView bean = new ImageView(new Image(getClass().getClassLoader().getResourceAsStream("com/example/bean.jpg")));
-            bean.setFitWidth(50);
-            bean.setFitHeight(50);
+            ImageView bean = new ImageView(new Image(getClass().getResourceAsStream("/com/example/mage00.jpg"))); // Adjust path as needed
+            bean.setFitWidth(30);
+            bean.setFitHeight(30);
             makeDraggable(bean);
             beans.add(bean);
         }
 
         setLeft(boardGrid);
         setRight(drawnCardImageView);
-        // setBottom(loteriaButton);
+    
 
         setupBoard();
-        setupLoteriaButton();
-        startGameLoop();
+       // setupLoteriaButton();
+        //startGameLoop();
 
     }
 
@@ -65,9 +65,17 @@ public class GamePane extends BorderPane {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 Card card = playerBoard.getCard(row, col);
-                ImageView cardImage = new ImageView(new Image(card.getImagePath()));
-                cardImage.setFitWidth(100);
-                cardImage.setFitHeight(150);
+                String imagePath = card.getImagePath();
+
+                System.out.println("Attempting to load:" + imagePath);
+                System.out.println("Resolved path: " + getClass().getResource(imagePath));
+
+
+                Image image = new Image(getClass().getResourceAsStream(imagePath));
+                ImageView cardImage = new ImageView(image);
+
+                cardImage.setFitWidth(120);
+                cardImage.setFitHeight(170);
                 boardGrid.add(cardImage, col, row);
             }
         }
@@ -85,7 +93,7 @@ public class GamePane extends BorderPane {
         HBox layout = new HBox(20, boardGrid, beanTray);
         layout.setAlignment(Pos.CENTER);
     
-        setCenter(layout); // Set the board and bean tray in the center
+        setLeft(layout); // Set the board and bean tray in the center
     }
 
     private void makeDraggable(ImageView bean) {
@@ -145,31 +153,31 @@ public class GamePane extends BorderPane {
     
     
 
-    private void markCard(int row, int col, StackPane stack) {
-        Card selectedCard = playerBoard.getCard(row, col);
+    // private void markCard(int row, int col, StackPane stack) {
+    //     Card selectedCard = playerBoard.getCard(row, col);
 
-        // Check if the card has been drawn before marking
-        if (drawnCards.contains(selectedCard)) {
-            // Load the bean image
-            ImageView beanImage = new ImageView(new Image("/com/example/bean.jpg")); // Adjust path as needed
+    //     // Check if the card has been drawn before marking
+    //     if (drawnCards.contains(selectedCard)) {
+    //         // Load the bean image
+    //         ImageView beanImage = new ImageView(new Image("/com/example/bean.jpg")); // Adjust path as needed
 
-            beanImage.setFitWidth(50);
-            beanImage.setFitHeight(50);
+    //         beanImage.setFitWidth(50);
+    //         beanImage.setFitHeight(50);
 
-            // Add the bean image on top of the button
-            stack.getChildren().add(beanImage);
+    //         // Add the bean image on top of the button
+    //         stack.getChildren().add(beanImage);
 
-            // // Get the current image of the card
-            // ImageView cardImageView = (ImageView) cardButton.getGraphic();
+    //         // // Get the current image of the card
+    //         // ImageView cardImageView = (ImageView) cardButton.getGraphic();
 
-            // // Create a StackPane to overlay the bean on the card
-            // StackPane stack = new StackPane();
-            // stack.getChildren().addAll(cardImageView, beanImage);
+    //         // // Create a StackPane to overlay the bean on the card
+    //         // StackPane stack = new StackPane();
+    //         // stack.getChildren().addAll(cardImageView, beanImage);
 
-            // // Set the new stack as the button's graphic
-            // cardButton.setGraphic(stack);
-        }
-    }
+    //         // // Set the new stack as the button's graphic
+    //         // cardButton.setGraphic(stack);
+    //     }
+    // }
 
     private void setupLoteriaButton() {
         loteriaButton.setOnAction(e -> checkWin());
@@ -181,7 +189,7 @@ public class GamePane extends BorderPane {
 
         // Wrap the button in a VBox and align it to the left
         VBox bottomBox = new VBox(loteriaButton);
-        bottomBox.setAlignment(Pos.CENTER_RIGHT); // Align to bottom left
+        bottomBox.setAlignment(Pos.CENTER_RIGHT); // Align to bottom Right
         bottomBox.setPadding(new Insets(0, 5, 0, 0)); // Adjust top padding to move it up
 
         setBottom(bottomBox);

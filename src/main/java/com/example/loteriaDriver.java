@@ -4,10 +4,12 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-//import java.net.URL;
+import java.net.URL;
 
 /**
  * JavaFX loteriaDriver
@@ -20,7 +22,7 @@ public class loteriaDriver extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         GamePane gamePane = new GamePane();
-        scene = new Scene(gamePane, 1000, 850);
+        scene = new Scene(gamePane, 1300, 850);
         stage.setTitle("Lotería Game");
         stage.setScene(scene);
         stage.show();
@@ -37,8 +39,9 @@ public class loteriaDriver extends Application {
 
     public static void main(String[] args) {
         launch();
+       
 
-        
+
 
     }
 

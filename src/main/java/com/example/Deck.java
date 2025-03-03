@@ -21,7 +21,7 @@ public class Deck {
         {"The Melon", "/com/example/mage10.jpg"},
         {"The Brave One", "/com/example/mage11.jpg"},
         {"The Bonnet", "/com/example/mage12.jpg"},
-        {"The Death", "/com/example/com/example/mage13.jpg"},
+        {"The Death", "/com/example/mage13.jpg"},
         {"The Pear", "/com/example/mage14.jpg"},
         {"The Flag", "/com/example/mage15.jpg"},
         {"The Mandolin", "/com/example/mage16.jpg"},
