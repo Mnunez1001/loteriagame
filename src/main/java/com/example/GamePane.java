@@ -43,7 +43,7 @@ public class GamePane extends BorderPane {
         winningConditionImage = new ImageView(new Image(getClass()
                 .getResourceAsStream("/com/example/" + WinningCondition.getWinningConditionImage() + ".png")));
         winningConditionImage.setFitWidth(200);
-        winningConditionImage.setFitHeight(200);
+        winningConditionImage.setFitHeight(350);
 
         // Create the list of 16 draggable beans
         beans = new ArrayList<>(); /// com/example/mage00.jpg com/example/beanEmoji.png
@@ -67,7 +67,7 @@ public class GamePane extends BorderPane {
 
         // Display the winning condition image
         VBox rightBox = new VBox(10, drawnCardImageView, winningConditionImage);
-        rightBox.setAlignment(Pos.CENTER);
+        rightBox.setAlignment(Pos.TOP_RIGHT);
         setRight(rightBox);
 
     }
@@ -152,7 +152,7 @@ public class GamePane extends BorderPane {
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, 5000);
+        }, 0, 1000);
     }
 
     private void drawCard() {

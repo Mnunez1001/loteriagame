@@ -26,7 +26,7 @@ public class Board {
     public boolean contains(Card card) {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
-                if (grid[row][col] != null && grid[row][col].getName().equals(card.getName())) {
+                if (grid[row][col] != null && grid[row][col].getImagePath().equals(card.getImagePath())) {
                     return true;
                 }
             }

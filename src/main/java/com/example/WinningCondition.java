@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 public class WinningCondition {
-     private static final String[] conditionNames = {
+    private static final String[] conditionNames = {
         "full", "horizontalLine", "verticalLine", "center4",
         "4Corners", "diagonal", "4InAndOut"
     };
@@ -21,13 +21,13 @@ public class WinningCondition {
 
     public static boolean isWinningBoard(Board board, List<Card> markedCards) {
         switch (selectedConditionIndex) {
-            case FULL_BOARD: checkFullBoard(markedCards);
-            case ROW_WIN: checkRowWin(board, markedCards);
-            case COLUMN_WIN: checkColumnWin(board, markedCards);
-            case CENTER_FOUR_WIN: checkCenterFourWin(board, markedCards);
-            case FOUR_CORNERS_WIN: checkFourCornersWin(board, markedCards);
-            case DIAGONAL_WIN:  checkDiagonalWin(board, markedCards);
-            case FOUR_IN_AND_OUT_WIN: checkFourInAndOutWin(board, markedCards);
+            case FULL_BOARD: return checkFullBoard(markedCards);
+            case ROW_WIN: return checkRowWin(board, markedCards);
+            case COLUMN_WIN: return checkColumnWin(board, markedCards);
+            case CENTER_FOUR_WIN: return checkCenterFourWin(board, markedCards);
+            case FOUR_CORNERS_WIN: return checkFourCornersWin(board, markedCards);
+            case DIAGONAL_WIN: return checkDiagonalWin(board, markedCards);
+            case FOUR_IN_AND_OUT_WIN: return checkFourInAndOutWin(board, markedCards);
             default: return false;
         }
     }
@@ -35,16 +35,28 @@ public class WinningCondition {
     public static String getWinningConditionImage() {
         return conditionNames[selectedConditionIndex];
     }
-    
+
+    /** Helper method to check if a card exists in markedCards based on name comparison */
+    private static boolean containsCard(List<Card> markedCards, Card card) {
+        for (Card marked : markedCards) {
+            if (marked.getName().equals(card.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Checks if all 16 board positions have been marked */
     private static boolean checkFullBoard(List<Card> markedCards) {
         return markedCards.size() == 16; // Assuming a 4x4 board
     }
-    
+
+    /** Checks if any row has been fully marked */
     private static boolean checkRowWin(Board board, List<Card> markedCards) {
         for (int row = 0; row < 4; row++) {
             boolean rowWin = true;
             for (int col = 0; col < 4; col++) {
-                if (!markedCards.contains(board.getCard(row, col))) {
+                if (!containsCard(markedCards, board.getCard(row, col))) {
                     rowWin = false;
                     break;
                 }
@@ -53,12 +65,13 @@ public class WinningCondition {
         }
         return false;
     }
-    
+
+    /** Checks if any column has been fully marked */
     private static boolean checkColumnWin(Board board, List<Card> markedCards) {
         for (int col = 0; col < 4; col++) {
             boolean colWin = true;
             for (int row = 0; row < 4; row++) {
-                if (!markedCards.contains(board.getCard(row, col))) {
+                if (!containsCard(markedCards, board.getCard(row, col))) {
                     colWin = false;
                     break;
                 }
@@ -67,32 +80,40 @@ public class WinningCondition {
         }
         return false;
     }
-    
+
+    /** Checks if the center 2x2 area is marked */
     private static boolean checkCenterFourWin(Board board, List<Card> markedCards) {
-        return markedCards.contains(board.getCard(1, 1)) && markedCards.contains(board.getCard(1, 2)) &&
-               markedCards.contains(board.getCard(2, 1)) && markedCards.contains(board.getCard(2, 2));
+        return containsCard(markedCards, board.getCard(1, 1)) &&
+               containsCard(markedCards, board.getCard(1, 2)) &&
+               containsCard(markedCards, board.getCard(2, 1)) &&
+               containsCard(markedCards, board.getCard(2, 2));
     }
-    
+
+    /** Checks if all four corners are marked */
     private static boolean checkFourCornersWin(Board board, List<Card> markedCards) {
-        return markedCards.contains(board.getCard(0, 0)) && markedCards.contains(board.getCard(0, 3)) &&
-               markedCards.contains(board.getCard(3, 0)) && markedCards.contains(board.getCard(3, 3));
+        return containsCard(markedCards, board.getCard(0, 0)) &&
+               containsCard(markedCards, board.getCard(0, 3)) &&
+               containsCard(markedCards, board.getCard(3, 0)) &&
+               containsCard(markedCards, board.getCard(3, 3));
     }
-    
+
+    /** Checks if either diagonal (↘ or ↙) is fully marked */
     private static boolean checkDiagonalWin(Board board, List<Card> markedCards) {
         boolean mainDiagonal = true;
         boolean antiDiagonal = true;
-        
+
         for (int i = 0; i < 4; i++) {
-            if (!markedCards.contains(board.getCard(i, i))) {
+            if (!containsCard(markedCards, board.getCard(i, i))) {
                 mainDiagonal = false;
             }
-            if (!markedCards.contains(board.getCard(i, 3 - i))) {
+            if (!containsCard(markedCards, board.getCard(i, 3 - i))) {
                 antiDiagonal = false;
             }
         }
         return mainDiagonal || antiDiagonal;
     }
-    
+
+    /** Checks if both four corners and center four are marked */
     private static boolean checkFourInAndOutWin(Board board, List<Card> markedCards) {
         return checkFourCornersWin(board, markedCards) && checkCenterFourWin(board, markedCards);
     }
