@@ -1,13 +1,39 @@
 package com.example;
 
 import java.util.List;
+import java.util.Random;
 
 public class WinningCondition {
+     private static final String[] conditionNames = {
+        "full", "horizontalLine", "verticalLine", "center4",
+        "4Corners", "diagonal", "4InAndOut"
+    };
+
+    private static final int FULL_BOARD = 0;
+    private static final int ROW_WIN = 1;
+    private static final int COLUMN_WIN = 2;
+    private static final int CENTER_FOUR_WIN = 3;
+    private static final int FOUR_CORNERS_WIN = 4;
+    private static final int DIAGONAL_WIN = 5;
+    private static final int FOUR_IN_AND_OUT_WIN = 6;
+
+    private static int selectedConditionIndex = new Random().nextInt(conditionNames.length);
+
     public static boolean isWinningBoard(Board board, List<Card> markedCards) {
-        return checkFullBoard(markedCards) || checkRowWin(board, markedCards) ||
-               checkColumnWin(board, markedCards) || checkCenterFourWin(board, markedCards) ||
-               checkFourCornersWin(board, markedCards) || checkDiagonalWin(board, markedCards) ||
-               checkFourInAndOutWin(board, markedCards);
+        switch (selectedConditionIndex) {
+            case FULL_BOARD: checkFullBoard(markedCards);
+            case ROW_WIN: checkRowWin(board, markedCards);
+            case COLUMN_WIN: checkColumnWin(board, markedCards);
+            case CENTER_FOUR_WIN: checkCenterFourWin(board, markedCards);
+            case FOUR_CORNERS_WIN: checkFourCornersWin(board, markedCards);
+            case DIAGONAL_WIN:  checkDiagonalWin(board, markedCards);
+            case FOUR_IN_AND_OUT_WIN: checkFourInAndOutWin(board, markedCards);
+            default: return false;
+        }
+    }
+
+    public static String getWinningConditionImage() {
+        return conditionNames[selectedConditionIndex];
     }
     
     private static boolean checkFullBoard(List<Card> markedCards) {
