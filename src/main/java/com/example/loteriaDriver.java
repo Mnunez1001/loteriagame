@@ -18,15 +18,28 @@ import java.net.URL;
 public class loteriaDriver extends Application {
 
     private static Scene scene;
+    private Stage stage;
 
     @Override
     public void start(Stage stage) throws IOException {
-        GamePane gamePane = new GamePane();
-        scene = new Scene(gamePane, 1300, 850);
+        this.stage = stage;
+        showStartScreen();
         stage.setTitle("Lotería Game");
-        stage.setScene(scene);
         stage.show();
     }
+
+    private void showStartScreen() {
+        StartScreen startScreen = new StartScreen(this);
+        Scene scene = new Scene(startScreen, 1300, 850);
+        stage.setScene(scene);
+    }
+
+    public void startGame() {
+        GamePane gamePane = new GamePane(stage);
+        Scene scene = new Scene(gamePane, 1300, 850);
+        stage.setScene(scene);
+    }
+
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));

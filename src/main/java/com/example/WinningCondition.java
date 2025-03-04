@@ -36,6 +36,18 @@ public class WinningCondition {
         return conditionNames[selectedConditionIndex];
     }
 
+    public static void generateNewCondition() {
+        Random random = new Random();
+        int newCondition;
+        
+        do {
+            newCondition = random.nextInt(conditionNames.length);
+        } while (newCondition == selectedConditionIndex); // Ensure it's different from the previous one
+    
+        selectedConditionIndex = newCondition;
+    }
+    
+
     /** Helper method to check if a card exists in markedCards based on name comparison */
     private static boolean containsCard(List<Card> markedCards, Card card) {
         for (Card marked : markedCards) {

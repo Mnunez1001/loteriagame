@@ -4,11 +4,14 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -25,13 +28,16 @@ public class GamePane extends BorderPane {
     private ImageView drawnCardImageView;
     private List<ImageView> beans;
     private ImageView winningConditionImage;
+    private Stage primaryStage; // Reference to the main application stage
 
-    public GamePane() {
+    public GamePane(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         playerBoard = new Board();
         deck = new Deck();
         drawnCards = new ArrayList<>();
         boardGrid = new GridPane();
         loteriaButton = new Button("Lotería");
+
         drawnCardText = new Text("Next Card:");
 
         // Drawn card image
@@ -152,7 +158,7 @@ public class GamePane extends BorderPane {
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, 1000);
+        }, 0, 500);
     }
 
     private void drawCard() {
@@ -163,11 +169,24 @@ public class GamePane extends BorderPane {
         }
     }
 
-    private void checkWin() {
+   
+     private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
-            System.out.println("You won!");
+            showWinScreen();
         } else {
             System.out.println("Not yet!");
         }
     }
+
+    private void showWinScreen() {
+        WinScreen winScreen = new WinScreen(primaryStage);
+        primaryStage.setScene(new Scene(winScreen, 1300, 850));
+    }
+
+
+
+
+
+
+
 }
