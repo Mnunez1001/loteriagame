@@ -46,6 +46,11 @@ public class WinningCondition {
     
         selectedConditionIndex = newCondition;
     }
+
+    public static int getCurrentWinningCondition() {
+        return selectedConditionIndex;
+    }
+    
     
 
     /** Helper method to check if a card exists in markedCards based on name comparison */

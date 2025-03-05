@@ -27,9 +27,14 @@ public class ComputerPlayer {
             markedCards.add(drawnCard);
         }
     }
-    
-    public boolean checkWin(WinningCondition condition) {
-        return WinningCondition.isWinningBoard(board, markedCards);
+    public boolean checkWin(int conditionIndex) {
+        return WinningCondition.isWinningBoard(board, markedCards); // No need to pass conditionIndex here
     }
+
+    public int getMarkedCardCount() {
+        return markedCards.size();
+    }
+    
+    
 }
 

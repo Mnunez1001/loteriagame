@@ -34,12 +34,10 @@ public class loteriaDriver extends Application {
         stage.setScene(scene);
     }
 
-    public void startGame() {
-        GamePane gamePane = new GamePane(stage);
-        Scene scene = new Scene(gamePane, 1300, 850);
-        stage.setScene(scene);
+    public void startGame(Stage primaryStage, int numComputerPlayers) {
+        primaryStage.setScene(new Scene(new GamePane(primaryStage, numComputerPlayers, this), 1300, 850));
     }
-
+    
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));

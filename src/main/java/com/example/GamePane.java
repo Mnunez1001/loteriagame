@@ -29,8 +29,13 @@ public class GamePane extends BorderPane {
     private List<ImageView> beans;
     private ImageView winningConditionImage;
     private Stage primaryStage; // Reference to the main application stage
+    private loteriaDriver mainApp; // Reference to the main application
 
-    public GamePane(Stage primaryStage) {
+    private ComputerPlayerManager computerManager; // Manages AI players
+    private VBox computerPlayerBox; // Sidebar for displaying AI players
+
+    public GamePane(Stage primaryStage, int numComputerPlayers, loteriaDriver mainApp) {
+        this.mainApp = mainApp;
         this.primaryStage = primaryStage;
         playerBoard = new Board();
         deck = new Deck();
@@ -40,16 +45,19 @@ public class GamePane extends BorderPane {
 
         drawnCardText = new Text("Next Card:");
 
+        // Initialize AI players
+        computerManager = new ComputerPlayerManager(numComputerPlayers, this);
+
         // Drawn card image
         drawnCardImageView = new ImageView();
         drawnCardImageView.setFitWidth(200);
-        drawnCardImageView.setFitHeight(350);
+        drawnCardImageView.setFitHeight(300);
 
         // Winning condition image
         winningConditionImage = new ImageView(new Image(getClass()
                 .getResourceAsStream("/com/example/" + WinningCondition.getWinningConditionImage() + ".png")));
         winningConditionImage.setFitWidth(200);
-        winningConditionImage.setFitHeight(350);
+        winningConditionImage.setFitHeight(300);
 
         // Create the list of 16 draggable beans
         beans = new ArrayList<>(); /// com/example/mage00.jpg com/example/beanEmoji.png
@@ -69,10 +77,11 @@ public class GamePane extends BorderPane {
 
         setupBoard();
         setupLoteriaButton();
+        setupComputerPlayersUI();
         startGameLoop();
 
         // Display the winning condition image
-        VBox rightBox = new VBox(10, drawnCardImageView, winningConditionImage);
+        VBox rightBox = new VBox(10, drawnCardImageView, winningConditionImage, computerPlayerBox);
         rightBox.setAlignment(Pos.TOP_RIGHT);
         setRight(rightBox);
 
@@ -151,6 +160,23 @@ public class GamePane extends BorderPane {
         setBottom(bottomBox);
     }
 
+    private void setupComputerPlayersUI() {
+        computerPlayerBox = new VBox(10);
+        computerPlayerBox.setPadding(new Insets(10));
+        computerPlayerBox.setAlignment(Pos.CENTER);
+        computerPlayerBox.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-padding: 10px;");
+
+        Text label = new Text("Computer Players");
+        computerPlayerBox.getChildren().add(label);
+
+        for (ComputerPlayer player : computerManager.getComputerPlayers()) {
+            Text playerText = new Text(player.getName());
+            computerPlayerBox.getChildren().add(playerText);
+        }
+
+        setRight(computerPlayerBox);
+    }
+
     private void startGameLoop() {
         timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -161,27 +187,54 @@ public class GamePane extends BorderPane {
         }, 0, 500);
     }
 
+    
+
     private void drawCard() {
         Card drawnCard = deck.drawCard();
         if (drawnCard != null) {
             drawnCards.add(drawnCard);
             drawnCardImageView.setImage(drawnCard.getImage());
+
+            // Update AI players
+            computerManager.updateComputers(drawnCard);
+
+            // Check if any AI won
+            for (ComputerPlayer player : computerManager.getComputerPlayers()) {
+                if (player.checkWin(WinningCondition.getCurrentWinningCondition())) {
+                    showWinScreen(player.getName());
+                    return;
+                }
+            }
         }
     }
 
-   
-     private void checkWin() {
+    private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
-            showWinScreen();
+            showWinScreen("You");
         } else {
             System.out.println("Not yet!");
         }
     }
 
-    private void showWinScreen() {
-        WinScreen winScreen = new WinScreen(primaryStage);
+    private void showWinScreen(String winnerName) {
+        WinScreen winScreen = new WinScreen(primaryStage, winnerName, mainApp);
         primaryStage.setScene(new Scene(winScreen, 1300, 850));
     }
+
+    public void updateComputerPlayerUI() {
+        computerPlayerBox.getChildren().clear();
+        
+        // Add title again
+        Text label = new Text("Computer Players");
+        computerPlayerBox.getChildren().add(label);
+    
+        // Add each computer player with their marked status
+        for (ComputerPlayer player : computerManager.getComputerPlayers()) {
+            Text playerText = new Text(player.getName() + "-Marked Cards: " + player.getMarkedCardCount());
+            computerPlayerBox.getChildren().add(playerText);
+        }
+    }
+    
 
 
 

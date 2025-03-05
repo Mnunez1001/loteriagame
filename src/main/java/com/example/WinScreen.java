@@ -9,24 +9,20 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class WinScreen extends VBox {
-    public WinScreen(Stage primaryStage) {
-        setAlignment(Pos.CENTER);
+    public WinScreen(Stage primaryStage, String winnerName, loteriaDriver mainApp) {
         setSpacing(20);
+        setAlignment(Pos.CENTER);
 
-        Text message = new Text("Congratulations! You have won the game!");
-        message.setFont(new Font(30));
+        Text winMessage = new Text(winnerName + " won the game!");
+        winMessage.setStyle("-fx-font-size: 40px; -fx-font-weight: bold;");
 
-        Button playAgainButton = new Button("Play a new match");
-        playAgainButton.setFont(new Font(20));
-        //playAgainButton.setOnAction(e -> primaryStage.setScene(new Scene(new GamePane(primaryStage), 1300, 850)));
-
-        playAgainButton.setOnAction(e -> {
-            WinningCondition.generateNewCondition(); // Force a new condition
-            primaryStage.setScene(new Scene(new GamePane(primaryStage), 1300, 850));
+        Button backButton = new Button("Back to Menu");
+        backButton.setStyle("-fx-font-size: 20px;");
+        backButton.setOnAction(e -> {
+            StartScreen startScreen = new StartScreen(mainApp);
+            primaryStage.setScene(new Scene(startScreen, 1300, 850));
         });
-        
 
-
-        getChildren().addAll(message, playAgainButton);
+        getChildren().addAll(winMessage, backButton);
     }
 }
