@@ -35,6 +35,7 @@ public class loteriaDriver extends Application {
     }
 
     public void startGame(Stage primaryStage, int numComputerPlayers) {
+        WinningCondition.generateNewCondition(); // Generate a new winning condition
         primaryStage.setScene(new Scene(new GamePane(primaryStage, numComputerPlayers, this), 1300, 850));
     }
     

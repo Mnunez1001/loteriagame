@@ -216,7 +216,7 @@ public class GamePane extends BorderPane {
         }
     }
 
-    private void showWinScreen(String winnerName) {
+    public void showWinScreen(String winnerName) {
         WinScreen winScreen = new WinScreen(primaryStage, winnerName, mainApp);
         primaryStage.setScene(new Scene(winScreen, 1300, 850));
     }
@@ -234,6 +234,14 @@ public class GamePane extends BorderPane {
             computerPlayerBox.getChildren().add(playerText);
         }
     }
+
+    public void stopGameLoop() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+    
     
 
 
