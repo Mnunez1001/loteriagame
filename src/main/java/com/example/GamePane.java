@@ -17,6 +17,18 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Represents the main game interface for the Lotería game.
+ * It handles the game board, deck, drawn cards, computer players, and game logic.
+ * It extends BorderPane to allow for easy placement of UI elements.
+ * 
+ * @author Miguel Alexander Nunez Palomares
+ * @version 1.0
+ * @see javafx.application.Platform, javafx.geometry.Bounds, javafx.geometry.Insets, javafx.geometry.Pos, 
+ * javafx.scene.Scene, javafx.scene.control.Button, javafx.scene.image.Image, javafx.scene.image.ImageView, 
+ * javafx.scene.layout.BorderPane, javafx.scene.layout.GridPane, javafx.scene.layout.VBox, javafx.scene.text.Text, javafx.stage.Stage
+ */
+
 public class GamePane extends BorderPane {
     private Board playerBoard;
     private Deck deck;
@@ -34,6 +46,13 @@ public class GamePane extends BorderPane {
     private ComputerPlayerManager computerManager; // Manages AI players
     private VBox computerPlayerBox; // Sidebar for displaying AI players
 
+    /**
+     * Constructs the GamePane, initializing the game components and UI elements.
+     *
+     * @param primaryStage       The main application stage.
+     * @param numComputerPlayers The number of computer opponents.
+     * @param mainApp            The main application driver.
+     */
     public GamePane(Stage primaryStage, int numComputerPlayers, loteriaDriver mainApp) {
         this.mainApp = mainApp;
         this.primaryStage = primaryStage;
@@ -87,6 +106,10 @@ public class GamePane extends BorderPane {
 
     }
 
+    /**
+     * Sets up the game board by loading card images and arranging them in a grid.
+     * Also initializes the draggable bean markers.
+     */
     private void setupBoard() {
         boardGrid.setPadding(new Insets(10));
         boardGrid.setHgap(5);
@@ -128,6 +151,11 @@ public class GamePane extends BorderPane {
 
     }
 
+     /**
+     * Makes the given bean image draggable so the player can place markers on the board.
+     *
+     * @param bean The bean image to be made draggable.
+     */
     private void makeDraggable(ImageView bean) {
         final double[] offsetX = new double[1];
         final double[] offsetY = new double[1];
@@ -144,6 +172,9 @@ public class GamePane extends BorderPane {
 
     }
 
+    /**
+     * Sets up the "Lotería" button, which allows the player to claim a win.
+     */
     private void setupLoteriaButton() {
         loteriaButton.setOnAction(e -> checkWin());
 
@@ -160,6 +191,9 @@ public class GamePane extends BorderPane {
         setBottom(bottomBox);
     }
 
+    /**
+     * Sets up the user interface for displaying computer player statuses.
+     */
     private void setupComputerPlayersUI() {
         computerPlayerBox = new VBox(10);
         computerPlayerBox.setPadding(new Insets(10));
@@ -177,6 +211,9 @@ public class GamePane extends BorderPane {
         setRight(computerPlayerBox);
     }
 
+    /**
+     * Starts the game loop, periodically drawing a new card and updating the game state.
+     */
     private void startGameLoop() {
         timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -188,7 +225,10 @@ public class GamePane extends BorderPane {
     }
 
     
-
+ /**
+     * Draws a card from the deck and updates the game state accordingly.
+     * Also checks if any computer players have won.
+     */
     private void drawCard() {
         Card drawnCard = deck.drawCard();
         if (drawnCard != null) {
@@ -208,6 +248,9 @@ public class GamePane extends BorderPane {
         }
     }
 
+    /**
+     * Checks if the player has won based on the drawn cards and the current winning condition.
+     */
     private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
             showWinScreen("You");
@@ -216,11 +259,19 @@ public class GamePane extends BorderPane {
         }
     }
 
+    /**
+     * Displays the win screen when a player or AI wins the game.
+     *
+     * @param winnerName The name of the winning player.
+     */
     public void showWinScreen(String winnerName) {
         WinScreen winScreen = new WinScreen(primaryStage, winnerName, mainApp);
         primaryStage.setScene(new Scene(winScreen, 1300, 850));
     }
 
+     /**
+     * Updates the UI to reflect the current status of computer players.
+     */
     public void updateComputerPlayerUI() {
         computerPlayerBox.getChildren().clear();
         
@@ -235,6 +286,9 @@ public class GamePane extends BorderPane {
         }
     }
 
+     /**
+     * Stops the game loop to prevent further card draws.
+     */
     public void stopGameLoop() {
         if (timer != null) {
             timer.cancel();
