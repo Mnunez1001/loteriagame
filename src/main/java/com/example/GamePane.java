@@ -19,14 +19,18 @@ import java.util.TimerTask;
 
 /**
  * Represents the main game interface for the Lotería game.
- * It handles the game board, deck, drawn cards, computer players, and game logic.
+ * It handles the game board, deck, drawn cards, computer players, and game
+ * logic.
  * It extends BorderPane to allow for easy placement of UI elements.
  * 
  * @author Miguel Alexander Nunez Palomares
  * @version 1.0
- * @see javafx.application.Platform, javafx.geometry.Bounds, javafx.geometry.Insets, javafx.geometry.Pos, 
- * javafx.scene.Scene, javafx.scene.control.Button, javafx.scene.image.Image, javafx.scene.image.ImageView, 
- * javafx.scene.layout.BorderPane, javafx.scene.layout.GridPane, javafx.scene.layout.VBox, javafx.scene.text.Text, javafx.stage.Stage
+ * @see javafx.application.Platform, javafx.geometry.Bounds,
+ *      javafx.geometry.Insets, javafx.geometry.Pos,
+ *      javafx.scene.Scene, javafx.scene.control.Button,
+ *      javafx.scene.image.Image, javafx.scene.image.ImageView,
+ *      javafx.scene.layout.BorderPane, javafx.scene.layout.GridPane,
+ *      javafx.scene.layout.VBox, javafx.scene.text.Text, javafx.stage.Stage
  */
 
 public class GamePane extends BorderPane {
@@ -81,10 +85,7 @@ public class GamePane extends BorderPane {
         // Create the list of 16 draggable beans
         beans = new ArrayList<>(); /// com/example/mage00.jpg com/example/beanEmoji.png
         for (int i = 0; i < 16; i++) {
-            ImageView bean = new ImageView(new Image(getClass().getResourceAsStream("/com/example/bean.png"))); // Adjust
-                                                                                                                // path
-                                                                                                                // as
-                                                                                                                // needed
+            ImageView bean = new ImageView(new Image(getClass().getResourceAsStream("/com/example/bean.png")));
             bean.setFitWidth(30);
             bean.setFitHeight(30);
             makeDraggable(bean);
@@ -92,7 +93,7 @@ public class GamePane extends BorderPane {
         }
 
         setLeft(boardGrid);
-        setRight(drawnCardImageView);
+        // setRight(drawnCardImageView);
 
         setupBoard();
         setupLoteriaButton();
@@ -132,12 +133,12 @@ public class GamePane extends BorderPane {
             }
         }
 
-        // Use an AnchorPane for absolute positioning
+        // AnchorPane for absolute positioning
 
         AnchorPane gamePane = new AnchorPane();
         gamePane.getChildren().add(boardGrid);
-        double startX = 550; // Adjust as needed
-        double startY = 550; // Adjust as needed
+        double startX = 550; // the x position of the beans
+        double startY = 550; // the y position of the beans
 
         // Add beans directly to the AnchorPane (not VBox)
         for (ImageView bean : beans) {
@@ -151,23 +152,26 @@ public class GamePane extends BorderPane {
 
     }
 
-     /**
-     * Makes the given bean image draggable so the player can place markers on the board.
+    /**
+     * Makes the given bean image draggable so the player can place markers on the
+     * board.
      *
      * @param bean The bean image to be made draggable.
      */
     private void makeDraggable(ImageView bean) {
-        final double[] offsetX = new double[1];
-        final double[] offsetY = new double[1];
+        final double[] offsetX = new double[1]; // used to store the initial offset (difference)
+        final double[] offsetY = new double[1]; // between the bean's position and the mouse click.
 
         bean.setOnMousePressed(event -> {
-            offsetX[0] = event.getSceneX() - bean.getTranslateX();
-            offsetY[0] = event.getSceneY() - bean.getTranslateY();
+            offsetX[0] = event.getSceneX() - bean.getTranslateX(); // It calculates and stores the offset
+            offsetY[0] = event.getSceneY() - bean.getTranslateY(); // between where the bean is located and where the
+                                                                   // user clicks.
         });
 
         bean.setOnMouseDragged(event -> {
-            bean.setTranslateX(event.getSceneX() - offsetX[0]);
-            bean.setTranslateY(event.getSceneY() - offsetY[0]);
+            bean.setTranslateX(event.getSceneX() - offsetX[0]);// It updates the bean’s position (TranslateX and
+                                                               // TranslateY)
+            bean.setTranslateY(event.getSceneY() - offsetY[0]);// based on the mouse's new position.
         });
 
     }
@@ -208,11 +212,25 @@ public class GamePane extends BorderPane {
             computerPlayerBox.getChildren().add(playerText);
         }
 
-        setRight(computerPlayerBox);
+        // setRight(computerPlayerBox);
     }
 
     /**
-     * Starts the game loop, periodically drawing a new card and updating the game state.
+     * Starts the game loop, periodically drawing a new card and updating the game
+     * state.
+     * 
+     * timer = new Timer(true);
+     * Creates a new Timer object, which is used to schedule tasks that run at
+     * specific time intervals.
+     * The parameter true makes the timer a daemon thread, meaning it will stop
+     * automatically when the program exits.
+     * 
+     * timer.scheduleAtFixedRate(new TimerTask() { ... }, 0, 500);
+     * This schedules a repeating task using scheduleAtFixedRate, 
+     * meaning it will execute the task at fixed time intervals.
+     * 
+     * delay: 0 milliseconds (start immediately)
+     * period: 500 milliseconds (0.5 seconds)
      */
     private void startGameLoop() {
         timer = new Timer(true);
@@ -224,8 +242,7 @@ public class GamePane extends BorderPane {
         }, 0, 500);
     }
 
-    
- /**
+    /**
      * Draws a card from the deck and updates the game state accordingly.
      * Also checks if any computer players have won.
      */
@@ -249,7 +266,8 @@ public class GamePane extends BorderPane {
     }
 
     /**
-     * Checks if the player has won based on the drawn cards and the current winning condition.
+     * Checks if the player has won based on the drawn cards and the current winning
+     * condition.
      */
     private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
@@ -269,16 +287,16 @@ public class GamePane extends BorderPane {
         primaryStage.setScene(new Scene(winScreen, 1300, 850));
     }
 
-     /**
+    /**
      * Updates the UI to reflect the current status of computer players.
      */
     public void updateComputerPlayerUI() {
         computerPlayerBox.getChildren().clear();
-        
+
         // Add title again
         Text label = new Text("Computer Players");
         computerPlayerBox.getChildren().add(label);
-    
+
         // Add each computer player with their marked status
         for (ComputerPlayer player : computerManager.getComputerPlayers()) {
             Text playerText = new Text(player.getName() + "-Marked Cards: " + player.getMarkedCardCount());
@@ -286,7 +304,7 @@ public class GamePane extends BorderPane {
         }
     }
 
-     /**
+    /**
      * Stops the game loop to prevent further card draws.
      */
     public void stopGameLoop() {
@@ -295,13 +313,5 @@ public class GamePane extends BorderPane {
             timer = null;
         }
     }
-    
-    
-
-
-
-
-
-
 
 }

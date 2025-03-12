@@ -12,12 +12,15 @@ import javafx.stage.Stage;
 
 /**
  * Represents the start screen of the Lotería game.
- * This screen allows the player to select the number of computer opponents and start the game.
+ * This screen allows the player to select the number of computer opponents and
+ * start the game.
  * 
  * @author Miguel Alexander Nunez Palomares
  * @version 1.0
- * @see javafx.geometry.Pos, javafx.scene.Scene, javafx.scene.control.Button, javafx.scene.control.Label, 
- * javafx.scene.control.Slider, javafx.scene.layout.VBox, javafx.scene.text.Font, javafx.scene.text.Text, javafx.stage.Stage
+ * @see javafx.geometry.Pos, javafx.scene.Scene, javafx.scene.control.Button,
+ *      javafx.scene.control.Label,
+ *      javafx.scene.control.Slider, javafx.scene.layout.VBox,
+ *      javafx.scene.text.Font, javafx.scene.text.Text, javafx.stage.Stage
  */
 public class StartScreen extends VBox {
     private int numComputerPlayers = 1; // Default to 1 computer player
@@ -31,11 +34,11 @@ public class StartScreen extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(20);
 
-          // Title text
+        // Title text
         Text title = new Text("Lotería Game");
         title.setFont(new Font(50));
 
-         // Slider label
+        // Slider label
         Label sliderLabel = new Label("Number of computer players:");
         sliderLabel.setFont(new Font(20));
 
@@ -47,18 +50,24 @@ public class StartScreen extends VBox {
         playerSlider.setShowTickLabels(true);
         playerSlider.setShowTickMarks(true);
 
-         // Listener for slider value changes
+        /**
+         * playerSlider.valueProperty() gets the current value of the slider.
+         * .addListener((obs, oldVal, newVal) -> { ... }) adds a listener that reacts
+         * whenever the slider’s value changes.
+         * 
+         * .intValue() converts that double to an integer, ensuring numComputerPlayers holds an integer value.
+         * 
+         */
         playerSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             numComputerPlayers = newVal.intValue();
         });
 
-         // Play button to start the game
+        // Play button to start the game
         Button playButton = new Button("Play");
         playButton.setFont(new Font(30));
-        playButton.setOnAction(e -> mainApp.startGame( (Stage)getScene().getWindow(), numComputerPlayers));
+        playButton.setOnAction(e -> mainApp.startGame((Stage) getScene().getWindow(), numComputerPlayers));
 
-         // Add components to the layout
+        // Add components to the layout
         getChildren().addAll(title, playButton, sliderLabel, playerSlider);
     }
 }
-
