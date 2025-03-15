@@ -47,7 +47,7 @@ public class StartScreen extends VBox {
         setSpacing(20);
 
         // Set Background Image
-        Image backgroundImage = new Image("/com/example/picado.jpg");
+        Image backgroundImage =  new Image(getClass().getResource("/com/example/picado.jpg").toExternalForm());
         BackgroundImage background = new BackgroundImage(backgroundImage,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, false, true));
@@ -61,7 +61,9 @@ public class StartScreen extends VBox {
 
         // Slider label
         Label sliderLabel = new Label("Number of computer players:");
-        sliderLabel.setFont(new Font(20));
+        //sliderLabel.setFont(new Font(20));
+        sliderLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 20));
+        sliderLabel.setTextFill(Color.WHITE);
 
         // Slider to select number of computer players (1-4) + decorations
         Slider playerSlider = new Slider(0, 4, 1);

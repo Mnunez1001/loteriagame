@@ -239,7 +239,7 @@ public class GamePane extends BorderPane {
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, 5000);
+        }, 0, 4500);
     }
 
     /**
