@@ -1,14 +1,26 @@
 package com.example;
 
+//import java.time.Duration;
+
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Represents the start screen of the Lotería game.
@@ -34,9 +46,18 @@ public class StartScreen extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(20);
 
-        // Title text
+        // Set Background Image
+        Image backgroundImage = new Image("/com/example/picado.jpg");
+        BackgroundImage background = new BackgroundImage(backgroundImage,
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, false, true));
+        this.setBackground(new Background(background));
+
+        // Title text with drop shadow
         Text title = new Text("Lotería Game");
-        title.setFont(new Font(50));
+        title.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 60));
+        title.setFill(Color.WHITE);
+        title.setStyle("-fx-effect: dropshadow( gaussian, black, 3, 0.3, 0, 2);"); // Drop shadow effect
 
         // Slider label
         Label sliderLabel = new Label("Number of computer players:");
@@ -63,11 +84,38 @@ public class StartScreen extends VBox {
         });
 
         // Play button to start the game
-        Button playButton = new Button("Play");
-        playButton.setFont(new Font(30));
+        Button playButton = createStyledButton("Play");
         playButton.setOnAction(e -> mainApp.startGame((Stage) getScene().getWindow(), numComputerPlayers));
 
         // Add components to the layout
         getChildren().addAll(title, playButton, sliderLabel, playerSlider);
     }
+
+
+    private Button createStyledButton(String text) {
+        Button button = new Button(text);
+        button.setFont(Font.font("Baloo", FontWeight.BOLD, 30));
+        button.setTextFill(Color.WHITE);
+        button.setStyle("-fx-background-color: #FF5733; -fx-background-radius: 15; -fx-padding: 10 20;");
+        
+        // Hover Effect - Scale Up
+        button.setOnMouseEntered(e -> scaleButton(button, 1.1));
+        button.setOnMouseExited(e -> scaleButton(button, 1.0));
+
+        return button;
+    }
+
+    private void scaleButton(Button button, double scale) {
+        ScaleTransition st = new ScaleTransition(Duration.seconds(0.15), button);
+        st.setToX(scale);
+        st.setToY(scale);
+        st.play();
+    }
+
+
+
+
+
+
+
 }
