@@ -6,14 +6,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,8 +69,14 @@ public class GamePane extends BorderPane {
         drawnCards = new ArrayList<>();
         boardGrid = new GridPane();
         loteriaButton = new Button("Lotería");
-
         drawnCardText = new Text("Next Card:");
+
+        // Background Image for the pane
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/redyellow.jpg"));
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(BackgroundSize.AUTO,
+                        BackgroundSize.AUTO, false, false, true, true));
+        setBackground(new Background(background));
 
         // Initialize AI players
         computerManager = new ComputerPlayerManager(numComputerPlayers, this);
@@ -76,11 +86,34 @@ public class GamePane extends BorderPane {
         drawnCardImageView.setFitWidth(200);
         drawnCardImageView.setFitHeight(300);
 
+        StackPane drawnCardPane = new StackPane(drawnCardImageView);
+
+        // // Set border explicitly
+        drawnCardPane.setBorder(new Border(new BorderStroke(
+                Color.BLACK, // Border color
+                BorderStrokeStyle.SOLID, // Border style
+                new CornerRadii(5), // Corner radius
+                new BorderWidths(3) // Border width
+        )));
+
+        // drawnCardPane.setStyle("-fx-min-width: 200px;");
+
+    
+
         // Winning condition image
         winningConditionImage = new ImageView(new Image(getClass()
                 .getResourceAsStream("/com/example/" + WinningCondition.getWinningConditionImage() + ".png")));
         winningConditionImage.setFitWidth(200);
         winningConditionImage.setFitHeight(300);
+       
+        StackPane winningConditionPane = new StackPane(winningConditionImage);
+        winningConditionPane.setBorder(new Border(new BorderStroke(
+                Color.BLACK, // Border color
+                BorderStrokeStyle.SOLID, // Border style
+                new CornerRadii(5), // Corner radius
+                new BorderWidths(3) // Border width
+        )));
+        // winningConditionPane.setStyle("-fx-min-width: 200px;");
 
         // Create the list of 16 draggable beans
         beans = new ArrayList<>(); /// com/example/mage00.jpg com/example/beanEmoji.png
@@ -89,6 +122,7 @@ public class GamePane extends BorderPane {
             bean.setFitWidth(30);
             bean.setFitHeight(30);
             makeDraggable(bean);
+            
             beans.add(bean);
         }
 
@@ -101,7 +135,7 @@ public class GamePane extends BorderPane {
         startGameLoop();
 
         // Display the winning condition image
-        VBox rightBox = new VBox(10, drawnCardImageView, winningConditionImage, computerPlayerBox);
+        VBox rightBox = new VBox(10, drawnCardPane, winningConditionPane, computerPlayerBox);
         rightBox.setAlignment(Pos.TOP_RIGHT);
         setRight(rightBox);
 
@@ -129,7 +163,27 @@ public class GamePane extends BorderPane {
 
                 cardImage.setFitWidth(120);
                 cardImage.setFitHeight(170);
-                boardGrid.add(cardImage, col, row);
+                // Add border and shadow effect
+                // Create a StackPane to wrap the ImageView
+                StackPane cardPane = new StackPane(cardImage);
+
+                // Set border explicitly
+                cardPane.setBorder(new Border(new BorderStroke(
+                        Color.BLACK, // Border color
+                        BorderStrokeStyle.SOLID, // Border style
+                        new CornerRadii(5), // Corner radius
+                        new BorderWidths(3) // Border width
+                )));
+
+                // Apply drop shadow effect
+                DropShadow shadow = new DropShadow();
+                shadow.setRadius(10);
+                shadow.setOffsetX(2);
+                shadow.setOffsetY(2);
+                shadow.setColor(Color.rgb(0, 0, 0, 0.5)); // Semi-transparent black shadow
+                cardPane.setEffect(shadow);
+
+                boardGrid.add(cardPane, col, row);
             }
         }
 
@@ -183,9 +237,42 @@ public class GamePane extends BorderPane {
         loteriaButton.setOnAction(e -> checkWin());
 
         // Make the button bigger
-        loteriaButton.setStyle("-fx-font-size: 40px; -fx-padding: 10px 10px;");
+        // loteriaButton.setStyle("-fx-font-size: 40px; -fx-padding: 10px 10px;");
+        // Apply gradient background, bold font, and slight shadow
+        loteriaButton.setStyle("-fx-font-size: 50px; " +
+                "-fx-padding: 12px 20px; " +
+                "-fx-background-color: linear-gradient(to bottom, #ffcc00, #ff6600); " + // Yellow to Orange gradient
+                "-fx-text-fill: white; " + // White text color
+                "-fx-font-weight: bold; " +
+                "-fx-border-radius: 15px;" +
+                "-fx-background-radius: 15px;" ); // Bold font
+                // "-fx-border-color: black; " + // Black border
+                // "-fx-border-width: 3px; " + // Border width
+                // "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 2, 2);"); // Subtle shadow
+
+
+
+        // Hover effect for button
+        loteriaButton.setOnMouseEntered(e -> loteriaButton.setStyle(
+                "-fx-font-size: 50px;" +
+                        "-fx-background-color: linear-gradient(to bottom, #ff6600, #ffcc00);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-padding: 12px 20px;" +
+                        "-fx-border-radius: 15px;" +
+                        "-fx-background-radius: 15px;" +
+                        "-fx-font-weight: bold;"));
+        loteriaButton.setOnMouseExited(e -> loteriaButton.setStyle(
+                "-fx-font-size: 50px;" +
+                        "-fx-background-color: linear-gradient(to bottom, #ffcc00, #ff6600);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-padding: 12px 20px;" +
+                        "-fx-border-radius: 15px;" +
+                        "-fx-background-radius: 15px;" +
+                        "-fx-font-weight: bold;"));
+
 
         // loteriaButton.setRotate(90); // Rotate the button text
+        loteriaButton.setPrefSize(500, 50); // Set preferred size
 
         // Wrap the button in a VBox and align it to the left
         VBox bottomBox = new VBox(loteriaButton);
@@ -203,6 +290,8 @@ public class GamePane extends BorderPane {
         computerPlayerBox.setPadding(new Insets(10));
         computerPlayerBox.setAlignment(Pos.CENTER);
         computerPlayerBox.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-padding: 10px;");
+        //-fx-min-width: 400px;
+        
 
         Text label = new Text("Computer Players");
         computerPlayerBox.getChildren().add(label);
@@ -226,7 +315,7 @@ public class GamePane extends BorderPane {
      * automatically when the program exits.
      * 
      * timer.scheduleAtFixedRate(new TimerTask() { ... }, 0, 500);
-     * This schedules a repeating task using scheduleAtFixedRate, 
+     * This schedules a repeating task using scheduleAtFixedRate,
      * meaning it will execute the task at fixed time intervals.
      * 
      * delay: 0 milliseconds (start immediately)
@@ -239,7 +328,7 @@ public class GamePane extends BorderPane {
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, 4500);
+        }, 0, 500);
     }
 
     /**

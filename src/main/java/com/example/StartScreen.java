@@ -62,7 +62,7 @@ public class StartScreen extends VBox {
         // Slider label
         Label sliderLabel = new Label("Number of computer players:");
         //sliderLabel.setFont(new Font(20));
-        sliderLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 20));
+        sliderLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 30));
         sliderLabel.setTextFill(Color.WHITE);
 
         // Slider to select number of computer players (1-4) + decorations
@@ -72,6 +72,8 @@ public class StartScreen extends VBox {
         playerSlider.setSnapToTicks(true);
         playerSlider.setShowTickLabels(true);
         playerSlider.setShowTickMarks(true);
+        playerSlider.setStyle("-fx-font-size: 28px; -fx-text-fill: white;");
+
 
         /**
          * playerSlider.valueProperty() gets the current value of the slider.
