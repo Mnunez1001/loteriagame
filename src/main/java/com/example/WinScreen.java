@@ -19,6 +19,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 
 
@@ -38,6 +41,8 @@ import javafx.stage.Stage;
 public class WinScreen extends VBox {
     private static final int CONFETTI_COUNT = 100;
     private final Confetti[] confettiArray = new Confetti[CONFETTI_COUNT];
+
+    private MediaPlayer mediaPlayer;
     
 
     /**
@@ -52,6 +57,9 @@ public class WinScreen extends VBox {
     public WinScreen(Stage primaryStage, String winnerName, loteriaDriver mainApp) {
         setSpacing(20);
         setAlignment(Pos.CENTER);
+
+        // Play victory music
+        playVictoryMusic();
 
         // Display the winning message
         // Text winMessage = new Text(winnerName + " won the game!");
@@ -104,6 +112,7 @@ public class WinScreen extends VBox {
                         "-fx-font-weight: bold;"));
 
         backButton.setOnAction(e -> {
+            stopMusic();
             StartScreen startScreen = new StartScreen(mainApp);
             primaryStage.setScene(new Scene(startScreen, 1300, 850));
         });
@@ -156,6 +165,26 @@ public class WinScreen extends VBox {
         for (Confetti confetti : confettiArray) {
             confetti.update();
             confetti.draw(gc);
+        }
+    }
+
+    private void playVictoryMusic() {
+        try {
+            String musicFile = "/com/example/win.mp3"; // Adjust path if needed
+            Media sound = new Media(getClass().getResource(musicFile).toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(0.6); // Set volume (0.0 - 1.0)
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error loading music: " + e.getMessage());
+        }
+    }
+
+    private void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose(); // Free up system resources
+            mediaPlayer = null; // Prevent further unintended use
         }
     }
 
