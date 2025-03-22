@@ -115,6 +115,8 @@ public class WinScreen extends VBox {
             stopMusic();
             StartScreen startScreen = new StartScreen(mainApp);
             primaryStage.setScene(new Scene(startScreen, 1300, 850));
+
+            
         });
 
         // // Add elements to the layout
@@ -122,7 +124,7 @@ public class WinScreen extends VBox {
         // Layout for text and button
         VBox layout = new VBox(20, winMessage, backButton);
         layout.setAlignment(Pos.CENTER);
-        layout.setTranslateY(-450); // Move the VBox up by 200 pixels
+        layout.setTranslateY(-450); // Move the VBox up by 450 pixels
 
         // Create a canvas for confetti animation
         Canvas canvas = new Canvas(1300, 850);
@@ -180,7 +182,7 @@ public class WinScreen extends VBox {
         }
     }
 
-    private void stopMusic() {
+    public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.dispose(); // Free up system resources

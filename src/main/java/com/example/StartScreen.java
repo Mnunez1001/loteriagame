@@ -21,6 +21,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Represents the start screen of the Lotería game.
@@ -37,6 +39,8 @@ import javafx.util.Duration;
 public class StartScreen extends VBox {
     private int numComputerPlayers = 1; // Default to 1 computer player
 
+    private MediaPlayer mediaPlayer;
+
     /**
      * Constructs the StartScreen UI and initializes its components.
      *
@@ -45,6 +49,9 @@ public class StartScreen extends VBox {
     public StartScreen(loteriaDriver mainApp) {
         setAlignment(Pos.CENTER);
         setSpacing(20);
+
+        // Play intro music
+        playIntroMusic();
 
         // Set Background Image
         Image backgroundImage =  new Image(getClass().getResource("/com/example/picado.jpg").toExternalForm());
@@ -89,7 +96,12 @@ public class StartScreen extends VBox {
 
         // Play button to start the game
         Button playButton = createStyledButton("Play");
-        playButton.setOnAction(e -> mainApp.startGame((Stage) getScene().getWindow(), numComputerPlayers));
+        playButton.setOnAction(e ->{
+            stopMusic();
+            
+            mainApp.startGame((Stage) getScene().getWindow(), numComputerPlayers);
+        
+        });
 
         // Add components to the layout
         getChildren().addAll(title, playButton, sliderLabel, playerSlider);
@@ -114,6 +126,26 @@ public class StartScreen extends VBox {
         st.setToX(scale);
         st.setToY(scale);
         st.play();
+    }
+
+    private void playIntroMusic() {
+        try {
+            String musicFile = "/com/example/intro.mp3"; // Adjust path if needed
+            Media sound = new Media(getClass().getResource(musicFile).toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(0.6); // Set volume (0.0 - 1.0)
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error loading music: " + e.getMessage());
+        }
+    }
+
+    public void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose(); // Free up system resources
+            mediaPlayer = null; // Prevent further unintended use
+        }
     }
 
 

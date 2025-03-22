@@ -70,6 +70,7 @@ class ComputerPlayerManager {
                 // Stop the game loop and show win screen
                 Platform.runLater(() -> {
                     gamePane.stopGameLoop(); // Ensure game loop is stopped
+                    gamePane.stopMusic(); // Stop the background music
                     gamePane.showWinScreen(player.getName()); // Show win screen
                 });
                 return; // Exit loop after first win

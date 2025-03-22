@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * Represents the main game interface for the Lotería game.
@@ -53,6 +55,7 @@ public class GamePane extends BorderPane {
 
     private ComputerPlayerManager computerManager; // Manages AI players
     private VBox computerPlayerBox; // Sidebar for displaying AI players
+    private MediaPlayer mediaPlayer;
 
     /**
      * Constructs the GamePane, initializing the game components and UI elements.
@@ -70,6 +73,8 @@ public class GamePane extends BorderPane {
         boardGrid = new GridPane();
         loteriaButton = new Button("Lotería");
         drawnCardText = new Text("Next Card:");
+
+        playGameMusic();
 
         // Background Image for the pane
         Image backgroundImage = new Image(getClass().getResourceAsStream("/com/example/redyellow.jpg"));
@@ -98,14 +103,12 @@ public class GamePane extends BorderPane {
 
         // drawnCardPane.setStyle("-fx-min-width: 200px;");
 
-    
-
         // Winning condition image
         winningConditionImage = new ImageView(new Image(getClass()
                 .getResourceAsStream("/com/example/" + WinningCondition.getWinningConditionImage() + ".png")));
         winningConditionImage.setFitWidth(200);
         winningConditionImage.setFitHeight(300);
-       
+
         StackPane winningConditionPane = new StackPane(winningConditionImage);
         winningConditionPane.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // Border color
@@ -122,7 +125,7 @@ public class GamePane extends BorderPane {
             bean.setFitWidth(30);
             bean.setFitHeight(30);
             makeDraggable(bean);
-            
+
             beans.add(bean);
         }
 
@@ -234,7 +237,11 @@ public class GamePane extends BorderPane {
      * Sets up the "Lotería" button, which allows the player to claim a win.
      */
     private void setupLoteriaButton() {
-        loteriaButton.setOnAction(e -> checkWin());
+        loteriaButton.setOnAction(e ->{
+            stopMusic();
+            
+            checkWin();
+        });
 
         // Make the button bigger
         // loteriaButton.setStyle("-fx-font-size: 40px; -fx-padding: 10px 10px;");
@@ -245,12 +252,11 @@ public class GamePane extends BorderPane {
                 "-fx-text-fill: white; " + // White text color
                 "-fx-font-weight: bold; " +
                 "-fx-border-radius: 15px;" +
-                "-fx-background-radius: 15px;" ); // Bold font
-                // "-fx-border-color: black; " + // Black border
-                // "-fx-border-width: 3px; " + // Border width
-                // "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 2, 2);"); // Subtle shadow
-
-
+                "-fx-background-radius: 15px;"); // Bold font
+        // "-fx-border-color: black; " + // Black border
+        // "-fx-border-width: 3px; " + // Border width
+        // "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 2, 2);"); // Subtle
+        // shadow
 
         // Hover effect for button
         loteriaButton.setOnMouseEntered(e -> loteriaButton.setStyle(
@@ -269,7 +275,6 @@ public class GamePane extends BorderPane {
                         "-fx-border-radius: 15px;" +
                         "-fx-background-radius: 15px;" +
                         "-fx-font-weight: bold;"));
-
 
         // loteriaButton.setRotate(90); // Rotate the button text
         loteriaButton.setPrefSize(500, 50); // Set preferred size
@@ -290,8 +295,7 @@ public class GamePane extends BorderPane {
         computerPlayerBox.setPadding(new Insets(10));
         computerPlayerBox.setAlignment(Pos.CENTER);
         computerPlayerBox.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-padding: 10px;");
-        //-fx-min-width: 400px;
-        
+        // -fx-min-width: 400px;
 
         Text label = new Text("Computer Players");
         computerPlayerBox.getChildren().add(label);
@@ -360,6 +364,7 @@ public class GamePane extends BorderPane {
      */
     private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
+            
             showWinScreen("You");
         } else {
             System.out.println("Not yet!");
@@ -372,6 +377,12 @@ public class GamePane extends BorderPane {
      * @param winnerName The name of the winning player.
      */
     public void showWinScreen(String winnerName) {
+
+        // Ensure any existing instance of WinScreen stops music
+        if (primaryStage.getScene() != null && primaryStage.getScene().getRoot() instanceof WinScreen) {
+            ((WinScreen) primaryStage.getScene().getRoot()).stopMusic();
+        }
+
         WinScreen winScreen = new WinScreen(primaryStage, winnerName, mainApp);
         primaryStage.setScene(new Scene(winScreen, 1300, 850));
     }
@@ -400,6 +411,27 @@ public class GamePane extends BorderPane {
         if (timer != null) {
             timer.cancel();
             timer = null;
+        }
+    }
+
+    private void playGameMusic() {
+        try {
+            String musicFile = "/com/example/game2.mp3"; // Adjust path if needed
+            Media sound = new Media(getClass().getResource(musicFile).toExternalForm());
+            mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.setVolume(0.6); // Set volume (0.0 - 1.0)
+            mediaPlayer.setCycleCount(5); // Ensure music plays only once
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error loading music: " + e.getMessage());
+        }
+    }
+
+    public void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose(); // Free up system resources
+            mediaPlayer = null; // Prevent further unintended use
         }
     }
 
