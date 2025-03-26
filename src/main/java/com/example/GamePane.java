@@ -326,13 +326,29 @@ public class GamePane extends BorderPane {
      * period: 500 milliseconds (0.5 seconds)
      */
     private void startGameLoop() {
+        int speed; // Time in milliseconds
+
+        switch (mainApp.getDifficulty()) {
+            case EASY:
+                speed = 4000; // 4 seconds
+                break;
+            case MEDIUM:
+                speed = 2500; // 2.5 seconds
+                break;
+            case HARD:
+                speed = 1000; // 1 seconds
+                break;
+            default:
+                speed = 2500; // Default to medium
+        }
+
         timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, 500);
+        }, 0, speed); //use the speed variable to determine the interval
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.loteriaDriver.Difficulty;
+
 //import java.time.Duration;
 
 import javafx.animation.ScaleTransition;
@@ -8,12 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -54,7 +59,7 @@ public class StartScreen extends VBox {
         playIntroMusic();
 
         // Set Background Image
-        Image backgroundImage =  new Image(getClass().getResource("/com/example/picado.jpg").toExternalForm());
+        Image backgroundImage = new Image(getClass().getResource("/com/example/picado.jpg").toExternalForm());
         BackgroundImage background = new BackgroundImage(backgroundImage,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 100, true, true, false, true));
@@ -68,7 +73,7 @@ public class StartScreen extends VBox {
 
         // Slider label
         Label sliderLabel = new Label("Number of computer players:");
-        //sliderLabel.setFont(new Font(20));
+        // sliderLabel.setFont(new Font(20));
         sliderLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 30));
         sliderLabel.setTextFill(Color.WHITE);
 
@@ -81,13 +86,13 @@ public class StartScreen extends VBox {
         playerSlider.setShowTickMarks(true);
         playerSlider.setStyle("-fx-font-size: 28px; -fx-text-fill: white;");
 
-
         /**
          * playerSlider.valueProperty() gets the current value of the slider.
          * .addListener((obs, oldVal, newVal) -> { ... }) adds a listener that reacts
          * whenever the slider’s value changes.
          * 
-         * .intValue() converts that double to an integer, ensuring numComputerPlayers holds an integer value.
+         * .intValue() converts that double to an integer, ensuring numComputerPlayers
+         * holds an integer value.
          * 
          */
         playerSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -96,29 +101,87 @@ public class StartScreen extends VBox {
 
         // Play button to start the game
         Button playButton = createStyledButton("Play");
-        playButton.setOnAction(e ->{
+        playButton.setOnAction(e -> {
             stopMusic();
-            
+
             mainApp.startGame((Stage) getScene().getWindow(), numComputerPlayers);
-        
+
         });
 
-        // Add components to the layout
-        getChildren().addAll(title, playButton, sliderLabel, playerSlider);
-    }
+        // Difficulty label
+        Label difficultyLabel = new Label("Choose your difficulty:");
+        // sliderLabel.setFont(new Font(20));
+        difficultyLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 30));
+        difficultyLabel.setTextFill(Color.WHITE);
 
+        HBox difficultyBox = new HBox(10);
+        difficultyBox.setAlignment(Pos.CENTER);
+
+        ToggleGroup difficultyGroup = new ToggleGroup();
+
+        ToggleButton easyButton = createStyledToggleButton("Easy");
+        ToggleButton mediumButton = createStyledToggleButton("Medium");
+        ToggleButton hardButton = createStyledToggleButton("Hard");
+
+        easyButton.setToggleGroup(difficultyGroup);
+        mediumButton.setToggleGroup(difficultyGroup);
+        hardButton.setToggleGroup(difficultyGroup);
+        mediumButton.setSelected(true); // Default to medium
+
+        // Event handlers for setting difficulty
+        easyButton.setOnAction(e -> {
+            updateDifficultyButtonColors(easyButton, mediumButton, hardButton);
+            mainApp.setDifficulty(Difficulty.EASY);
+        });
+
+        mediumButton.setOnAction(e -> {
+            updateDifficultyButtonColors(mediumButton, easyButton, hardButton);
+            mainApp.setDifficulty(Difficulty.MEDIUM);
+        });
+        hardButton.setOnAction(e -> {
+            updateDifficultyButtonColors(hardButton, mediumButton, easyButton);
+            mainApp.setDifficulty(Difficulty.HARD);
+        });
+
+        difficultyBox.getChildren().addAll(easyButton, mediumButton, hardButton);
+
+        // Add components to the layout
+        getChildren().addAll(title, playButton, difficultyLabel, difficultyBox, sliderLabel, playerSlider);
+    }
 
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setFont(Font.font("Baloo", FontWeight.BOLD, 30));
         button.setTextFill(Color.WHITE);
         button.setStyle("-fx-background-color: #FF5733; -fx-background-radius: 15; -fx-padding: 10 20;");
-        
+
         // Hover Effect - Scale Up
         button.setOnMouseEntered(e -> scaleButton(button, 1.1));
         button.setOnMouseExited(e -> scaleButton(button, 1.0));
 
         return button;
+    }
+
+    private ToggleButton createStyledToggleButton(String text) {
+        ToggleButton button = new ToggleButton(text);
+        button.setFont(Font.font("Baloo", FontWeight.BOLD, 30));
+        button.setTextFill(Color.WHITE);
+        button.setStyle("-fx-background-color:rgb(99, 51, 255); -fx-background-radius: 15; -fx-padding: 10 20;");
+
+        return button;
+    }
+
+    private void updateDifficultyButtonColors(ToggleButton selected, ToggleButton other, ToggleButton other2) {
+        ToggleButton[] others = { other, other2 };
+
+        // Highlight selected button
+        selected.setStyle(
+                "-fx-background-color: gold; -fx-background-radius: 15; -fx-padding: 10 20; -fx-text-fill: black;");
+
+        // Reset others to white
+        for (ToggleButton button : others) {
+            button.setStyle("-fx-background-color: rgb(99, 51, 255); -fx-background-radius: 15; -fx-padding: 10 20; -fx-text-fill: white;");
+        }
     }
 
     private void scaleButton(Button button, double scale) {
@@ -147,11 +210,5 @@ public class StartScreen extends VBox {
             mediaPlayer = null; // Prevent further unintended use
         }
     }
-
-
-
-
-
-
 
 }
