@@ -42,8 +42,14 @@ import javafx.scene.media.MediaPlayer;
  *      javafx.scene.text.Font, javafx.scene.text.Text, javafx.stage.Stage
  */
 public class StartScreen extends VBox {
+    /**
+     * The number of computer players in the game.
+     */
     private int numComputerPlayers = 1; // Default to 1 computer player
 
+    /**
+     * The media player for the intro music.
+     */
     private MediaPlayer mediaPlayer;
 
     /**
@@ -114,9 +120,11 @@ public class StartScreen extends VBox {
         difficultyLabel.setFont(Font.font("Luckiest Guy", FontWeight.BOLD, 30));
         difficultyLabel.setTextFill(Color.WHITE);
 
+        // Difficulty selection buttons
         HBox difficultyBox = new HBox(10);
         difficultyBox.setAlignment(Pos.CENTER);
 
+        // Create difficulty buttons
         ToggleGroup difficultyGroup = new ToggleGroup();
 
         ToggleButton easyButton = createStyledToggleButton("Easy");
@@ -149,6 +157,12 @@ public class StartScreen extends VBox {
         getChildren().addAll(title, playButton, difficultyLabel, difficultyBox, sliderLabel, playerSlider);
     }
 
+    /**
+     * Creates a styled button with a given text. The button has a custom font,
+     * color, and background color. Hovering over the button will scale it up.
+     * @param text
+     * @return Button
+     */
     private Button createStyledButton(String text) {
         Button button = new Button(text);
         button.setFont(Font.font("Baloo", FontWeight.BOLD, 30));
@@ -162,6 +176,12 @@ public class StartScreen extends VBox {
         return button;
     }
 
+    /**
+     * Creates a styled toggle button with a given text. The button has a custom
+     * font, color, and background color.
+     * @param text
+     * @return ToggleButton
+     */
     private ToggleButton createStyledToggleButton(String text) {
         ToggleButton button = new ToggleButton(text);
         button.setFont(Font.font("Baloo", FontWeight.BOLD, 30));
@@ -171,6 +191,13 @@ public class StartScreen extends VBox {
         return button;
     }
 
+    /**
+     * Updates the colors of the difficulty selection buttons to highlight the
+     * selected button and reset the others.
+     * @param selected
+     * @param other
+     * @param other2
+     */
     private void updateDifficultyButtonColors(ToggleButton selected, ToggleButton other, ToggleButton other2) {
         ToggleButton[] others = { other, other2 };
 
@@ -184,6 +211,11 @@ public class StartScreen extends VBox {
         }
     }
 
+    /**
+     * Scales a button to a given scale factor.
+     * @param button
+     * @param scale
+     */
     private void scaleButton(Button button, double scale) {
         ScaleTransition st = new ScaleTransition(Duration.seconds(0.15), button);
         st.setToX(scale);
@@ -191,6 +223,9 @@ public class StartScreen extends VBox {
         st.play();
     }
 
+    /**
+     * Plays the intro music for the start screen.
+     */
     private void playIntroMusic() {
         try {
             String musicFile = "/com/example/intro.mp3"; // Adjust path if needed
@@ -203,6 +238,9 @@ public class StartScreen extends VBox {
         }
     }
 
+    /**
+     * Stops the intro music.
+     */
     public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();

@@ -90,10 +90,9 @@ public class GamePane extends BorderPane {
         drawnCardImageView = new ImageView();
         drawnCardImageView.setFitWidth(200);
         drawnCardImageView.setFitHeight(300);
-
+        
+        // Set border explicitly
         StackPane drawnCardPane = new StackPane(drawnCardImageView);
-
-        // // Set border explicitly
         drawnCardPane.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // Border color
                 BorderStrokeStyle.SOLID, // Border style
@@ -109,6 +108,7 @@ public class GamePane extends BorderPane {
         winningConditionImage.setFitWidth(200);
         winningConditionImage.setFitHeight(300);
 
+        // Set border explicitly
         StackPane winningConditionPane = new StackPane(winningConditionImage);
         winningConditionPane.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // Border color
@@ -318,12 +318,12 @@ public class GamePane extends BorderPane {
      * The parameter true makes the timer a daemon thread, meaning it will stop
      * automatically when the program exits.
      * 
-     * timer.scheduleAtFixedRate(new TimerTask() { ... }, 0, 500);
+     * timer.scheduleAtFixedRate(new TimerTask() { ... }, 0, speed);
      * This schedules a repeating task using scheduleAtFixedRate,
      * meaning it will execute the task at fixed time intervals.
      * 
      * delay: 0 milliseconds (start immediately)
-     * period: 500 milliseconds (0.5 seconds)
+     * period: 2500 milliseconds (2.5 seconds)
      */
     private void startGameLoop() {
         int speed; // Time in milliseconds
@@ -430,6 +430,9 @@ public class GamePane extends BorderPane {
         }
     }
 
+    /**
+     * Plays the game music in a loop.
+     */
     private void playGameMusic() {
         try {
             String musicFile = "/com/example/game2.mp3"; // Adjust path if needed
@@ -443,6 +446,9 @@ public class GamePane extends BorderPane {
         }
     }
 
+    /**
+     * Stops the game music.
+     */
     public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();

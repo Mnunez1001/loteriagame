@@ -28,7 +28,7 @@ import javafx.scene.media.MediaPlayer;
 /**
  * Represents the win screen displayed when a player wins the game.
  * Shows a message announcing the winner and provides a button to return to the
- * main menu.
+ * main menu. Confetti animation is displayed in the background.
  * It extends VBox to allow for easy vertical alignment of its children.
  * 
  * @author Miguel Alexander Nunez Palomares
@@ -39,15 +39,17 @@ import javafx.scene.media.MediaPlayer;
  */
 
 public class WinScreen extends VBox {
+    /** Number of confetti pieces to display. */
     private static final int CONFETTI_COUNT = 100;
+    /** Array of confetti pieces. */
     private final Confetti[] confettiArray = new Confetti[CONFETTI_COUNT];
-
+    /** Media player for victory music. */
     private MediaPlayer mediaPlayer;
     
 
     /**
      * Constructs a WinScreen displaying the winner's name and a button to return to
-     * the menu.
+     * the menu. Confetti animation is displayed in the background.
      *
      * @param primaryStage The main stage where scenes are set.
      * @param winnerName   The name of the player who won the game.
@@ -60,18 +62,6 @@ public class WinScreen extends VBox {
 
         // Play victory music
         playVictoryMusic();
-
-        // Display the winning message
-        // Text winMessage = new Text(winnerName + " won the game!");
-        // winMessage.setStyle("-fx-font-size: 40px; -fx-font-weight: bold;");
-
-        // Button to return to the main menu
-        // Button backButton = new Button("Back to Menu");
-        // backButton.setStyle("-fx-font-size: 20px;");
-        // backButton.setOnAction(e -> {
-        // StartScreen startScreen = new StartScreen(mainApp);
-        // primaryStage.setScene(new Scene(startScreen, 1300, 850));
-        // });
 
         // Enhanced Winning Message
         Text winMessage = new Text(winnerName + " won the game! 🎉");
@@ -111,6 +101,7 @@ public class WinScreen extends VBox {
                         "-fx-background-radius: 15px;" +
                         "-fx-font-weight: bold;"));
 
+        // Return to main menu when button is clicked
         backButton.setOnAction(e -> {
             stopMusic();
             StartScreen startScreen = new StartScreen(mainApp);
@@ -120,7 +111,6 @@ public class WinScreen extends VBox {
         });
 
         // // Add elements to the layout
-        // getChildren().addAll(winMessage, backButton);
         // Layout for text and button
         VBox layout = new VBox(20, winMessage, backButton);
         layout.setAlignment(Pos.CENTER);
@@ -169,7 +159,10 @@ public class WinScreen extends VBox {
             confetti.draw(gc);
         }
     }
-
+    
+    /**
+     * Plays victory music when a player wins the game.
+     */
     private void playVictoryMusic() {
         try {
             String musicFile = "/com/example/win.mp3"; // Adjust path if needed
@@ -182,6 +175,9 @@ public class WinScreen extends VBox {
         }
     }
 
+    /**
+     * Stops the victory music.
+     */
     public void stopMusic() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
