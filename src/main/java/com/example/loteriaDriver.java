@@ -37,10 +37,16 @@ public class loteriaDriver extends Application {
         stage.show();
     }
 
-    private void showStartScreen() {
+    public void showStartScreen() {
         StartScreen startScreen = new StartScreen(this);
         Scene scene = new Scene(startScreen, 1300, 850);
         stage.setScene(scene);
+    }
+
+    public void showInstructionsScreen() {
+        InstructionsScreen instructionsScreen = new InstructionsScreen(stage, this);
+        Scene instructionsScene = new Scene(instructionsScreen, 1300, 850);
+        stage.setScene(instructionsScene);
     }
 
     public void startGame(Stage primaryStage, int numComputerPlayers) {

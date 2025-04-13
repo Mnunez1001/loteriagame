@@ -1,11 +1,15 @@
 package com.example;
 
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -48,6 +53,7 @@ public class GamePane extends BorderPane {
     private Text drawnCardText;
     private Timer timer;
     private ImageView drawnCardImageView;
+    private ImageView previousCardImageView;
     private List<ImageView> beans;
     private ImageView winningConditionImage;
     private Stage primaryStage; // Reference to the main application stage
@@ -90,9 +96,13 @@ public class GamePane extends BorderPane {
         drawnCardImageView = new ImageView();
         drawnCardImageView.setFitWidth(200);
         drawnCardImageView.setFitHeight(300);
-        
+
+        previousCardImageView = new ImageView();
+        previousCardImageView.setFitWidth(200);
+        previousCardImageView.setFitHeight(300);
+
         // Set border explicitly
-        StackPane drawnCardPane = new StackPane(drawnCardImageView);
+        StackPane drawnCardPane = new StackPane(previousCardImageView, drawnCardImageView);
         drawnCardPane.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // Border color
                 BorderStrokeStyle.SOLID, // Border style
@@ -237,9 +247,9 @@ public class GamePane extends BorderPane {
      * Sets up the "Lotería" button, which allows the player to claim a win.
      */
     private void setupLoteriaButton() {
-        loteriaButton.setOnAction(e ->{
-            stopMusic();
-            
+        loteriaButton.setOnAction(e -> {
+            // stopMusic();
+
             checkWin();
         });
 
@@ -348,29 +358,46 @@ public class GamePane extends BorderPane {
             public void run() {
                 Platform.runLater(() -> drawCard());
             }
-        }, 0, speed); //use the speed variable to determine the interval
+        }, 0, speed); // use the speed variable to determine the interval
     }
 
     /**
-     * Draws a card from the deck and updates the game state accordingly.
-     * Also checks if any computer players have won.
+     * Draws a card from the deck and updates the game state.
+     * It also updates the computer players' states and checks for a win condition.
+     * The cards slide in from the right when drawn.
      */
     private void drawCard() {
         Card drawnCard = deck.drawCard();
         if (drawnCard != null) {
             drawnCards.add(drawnCard);
+
+            // Temporarily move the image view off-screen to the right
+            previousCardImageView.setImage(drawnCardImageView.getImage());
+            drawnCardImageView.setTranslateX(300); // Adjust this value as needed
             drawnCardImageView.setImage(drawnCard.getImage());
 
-            // Update AI players
-            computerManager.updateComputers(drawnCard);
+            // Create slide-in animation from right to original position (0)
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(400), drawnCardImageView);
+            slideIn.setFromX(300); // Start off to the right
+            slideIn.setToX(0); // Slide into normal position
 
-            // Check if any AI won
-            for (ComputerPlayer player : computerManager.getComputerPlayers()) {
-                if (player.checkWin(WinningCondition.getCurrentWinningCondition())) {
-                    showWinScreen(player.getName());
-                    return;
+            slideIn.setOnFinished(event -> {
+
+                // After slide finishes, clear the previous image
+                previousCardImageView.setImage(null);
+
+                // Update AI players
+                computerManager.updateComputers(drawnCard);
+
+                // Check if any AI won
+                for (ComputerPlayer player : computerManager.getComputerPlayers()) {
+                    if (player.checkWin(WinningCondition.getCurrentWinningCondition())) {
+                        showWinScreen(player.getName());
+                        return;
+                    }
                 }
-            }
+            });
+            slideIn.play(); // Play the flip-out animation
         }
     }
 
@@ -380,10 +407,22 @@ public class GamePane extends BorderPane {
      */
     private void checkWin() {
         if (WinningCondition.isWinningBoard(playerBoard, drawnCards)) {
-            
+            stopMusic(); // Stop the game music
             showWinScreen("You");
         } else {
-            System.out.println("Not yet!");
+            // System.out.println("Not yet!");
+            // Show a message in the program
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Oops!");
+            alert.setHeaderText(null);
+            alert.setContentText("You haven't met the winning condition yet. Keep playing!");
+
+            // Apply the CSS
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().add(getClass().getResource("alert-style.css").toExternalForm());
+            dialogPane.getStyleClass().add("custom-alert");
+            
+            alert.showAndWait();
         }
     }
 

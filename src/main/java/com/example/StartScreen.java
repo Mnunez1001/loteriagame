@@ -59,7 +59,7 @@ public class StartScreen extends VBox {
      */
     public StartScreen(loteriaDriver mainApp) {
         setAlignment(Pos.CENTER);
-        setSpacing(20);
+        setSpacing(15);
 
         // Play intro music
         playIntroMusic();
@@ -153,13 +153,22 @@ public class StartScreen extends VBox {
 
         difficultyBox.getChildren().addAll(easyButton, mediumButton, hardButton);
 
+        Button instructionsButton = new Button("Instructions");
+        instructionsButton.setFont(Font.font("Baloo", FontWeight.BOLD, 25));
+        instructionsButton.setTextFill(Color.WHITE);
+        instructionsButton.setStyle("-fx-background-color: #FF5733; -fx-background-radius: 15; -fx-padding: 10 20;");
+        instructionsButton.setOnAction(e ->{
+            stopMusic();
+            mainApp.showInstructionsScreen();}); // Navigate to Instructions
+
         // Add components to the layout
-        getChildren().addAll(title, playButton, difficultyLabel, difficultyBox, sliderLabel, playerSlider);
+        getChildren().addAll(title, instructionsButton, difficultyLabel, difficultyBox, playButton, sliderLabel, playerSlider);
     }
 
     /**
      * Creates a styled button with a given text. The button has a custom font,
      * color, and background color. Hovering over the button will scale it up.
+     * 
      * @param text
      * @return Button
      */
@@ -179,6 +188,7 @@ public class StartScreen extends VBox {
     /**
      * Creates a styled toggle button with a given text. The button has a custom
      * font, color, and background color.
+     * 
      * @param text
      * @return ToggleButton
      */
@@ -194,6 +204,7 @@ public class StartScreen extends VBox {
     /**
      * Updates the colors of the difficulty selection buttons to highlight the
      * selected button and reset the others.
+     * 
      * @param selected
      * @param other
      * @param other2
@@ -207,12 +218,14 @@ public class StartScreen extends VBox {
 
         // Reset others to white
         for (ToggleButton button : others) {
-            button.setStyle("-fx-background-color: rgb(99, 51, 255); -fx-background-radius: 15; -fx-padding: 10 20; -fx-text-fill: white;");
+            button.setStyle(
+                    "-fx-background-color: rgb(99, 51, 255); -fx-background-radius: 15; -fx-padding: 10 20; -fx-text-fill: white;");
         }
     }
 
     /**
      * Scales a button to a given scale factor.
+     * 
      * @param button
      * @param scale
      */
